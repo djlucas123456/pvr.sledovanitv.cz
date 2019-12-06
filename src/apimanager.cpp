@@ -185,6 +185,7 @@ ApiManager::ApiManager(const std::string & userName, const std::string & userPas
   : m_userName{userName}
   , m_userPassword{userPassword}
   , m_sessionId{std::make_shared<std::string>()}
+  , m_pinUnlocked{false}
 {
   XBMC->Log(LOG_NOTICE, "Loading ApiManager");
 }
@@ -317,6 +318,7 @@ bool ApiManager::pairDevice()
 
 bool ApiManager::login()
 {
+  m_pinUnlocked = false;
   if (m_deviceId.empty() && m_password.empty())
   {
     if (!pairDevice())
@@ -359,6 +361,22 @@ bool ApiManager::login()
   std::atomic_store(&m_sessionId, std::make_shared<const std::string>(std::move(new_session_id)));
 
   return success;
+}
+
+bool ApiManager::pinUnlock(const std::string & pin)
+{
+  ApiParamMap params;
+  params["pin"] = pin;
+
+  bool result = isSuccess(apiCall("pin-unlock", params));
+  if (result)
+    m_pinUnlocked = true;
+  return result;
+}
+
+bool ApiManager::pinUnlocked() const
+{
+  return m_pinUnlocked;
 }
 
 bool ApiManager::getPlaylist(StreamQuality_t quality, bool useH265, bool useAdaptive, Json::Value & root)

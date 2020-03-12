@@ -277,10 +277,10 @@ bool ApiManager::pairDevice()
 
     params["username"] = m_userName;
     params["password"] = m_userPassword;
-    params["type"] = "androidportable";
-    params["product"] = hostName;
+    params["type"] = "lgtv";
+    params["product"] = "LG";
     // compute SHA256 of string representation of MAC address
-    params["serial"] = picosha2::hash256_hex_string(macAddr);
+    params["serial"] = "604RMMD8U923";
     params["unit"] = "default";
     //params["checkLimit"] = "1";
 
